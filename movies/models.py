@@ -20,3 +20,16 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.id) + ' - ' + self.movie.name
+
+class MoviePetition(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    votes = models.ManyToManyField(User, related_name='voted_petitions', blank=True)
+    
+    def vote_count(self):
+        return self.votes.count()
+
+    def __str__(self):
+        return self.title

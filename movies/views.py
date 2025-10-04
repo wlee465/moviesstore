@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, MoviePetition
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -61,3 +61,28 @@ def delete_review(request, id, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     review.delete()
     return redirect('movies.show', id=id)
+
+@login_required
+def petition_list(request):
+    petitions = MoviePetition.objects.all().order_by('-created_at')
+    return render(request, 'movies/petition_list.html', {'petitions': petitions})
+
+@login_required
+def create_petition(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        petition = MoviePetition.objects.create(
+            title=title,
+            description=description,
+            created_by=request.user
+        )
+        return redirect('petition_list')
+    return render(request, 'movies/create_petition.html')
+
+@login_required
+def vote_petition(request, petition_id):
+    petition = get_object_or_404(MoviePetition, id=petition_id)
+    if request.user not in petition.votes.all():
+        petition.votes.add(request.user)
+    return redirect('petition_list')

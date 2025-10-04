@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create Movie Petition</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Movie Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Create Petition</button>
+    </form>
+</div>
+{% endblock %}
